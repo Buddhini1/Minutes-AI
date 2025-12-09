@@ -92,8 +92,8 @@ app.config.update(
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=587,
     MAIL_USE_TLS=True,
-    MAIL_USERNAME='buddhinialwis1@gmail.com',   
-    MAIL_PASSWORD='gwug mqpx zuwy nqmp',      
+    MAIL_USERNAME='@gmail.com',   
+    MAIL_PASSWORD='',      
     MAIL_DEFAULT_SENDER=('MinutesAI', 'yourgmail@gmail.com')
 )
 
@@ -155,7 +155,7 @@ def diarize_audio(audio_path):
     """Separate speakers using pyannote diarization model."""
     diarization_pipeline = DiarizationPipeline.from_pretrained(
         "pyannote/speaker-diarization@2.1",
-        use_auth_token="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"
+        use_auth_token="hf_FB"
     )
     return diarization_pipeline(audio_path)
 
