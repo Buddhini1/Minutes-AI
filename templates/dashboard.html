@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MinutesAI Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-light: #e0e7ff;
+        --primary-dark: #3730a3;
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --border-radius: 12px;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05),
+          0 5px 15px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.05),
+          0 5px 20px rgba(0, 0, 0, 0.15);
+        --transition: all 0.3s ease;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+        color: var(--dark);
+        overflow-x: hidden;
+      }
+
+      .app-container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        background-color: white;
+        transition: var(--transition);
+        width: 280px;
+        border-right: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 10;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .sidebar.collapsed {
+        width: 80px;
+      }
+
+      .sidebar-header {
+        padding: 24px 20px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      /*.logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background-color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 18px;
+      }
+*/.logo-image img {
+  height: 36px;
+  width: 36px;
+  border-radius: 10px;
+  object-fit: contain;
+  display: block;
+}
+
+      .brand-name {
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--dark);
+        margin: 0;
+        white-space: nowrap;
+        transition: var(--transition);
+      }
+
+      .sidebar.collapsed .brand-name {
+        display: none;
+      }
+
+      .toggle-btn {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: #94a3b8;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .toggle-btn:hover {
+        background-color: #f1f5f9;
+        color: var(--primary);
+      }
+
+      .nav-menu {
+        display: flex;
+        flex-direction: column;
+        padding: 20px 16px;
+        gap: 8px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: #64748b;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+        font-weight: 500;
+      }
+
+      .nav-item:hover {
+        background-color: #f1f5f9;
+        color: var(--primary);
+      }
+
+      .nav-item.active {
+        background-color: var(--primary-light);
+        color: var(--primary-dark);
+        font-weight: 600;
+      }
+
+      .nav-item i {
+        font-size: 20px;
+        margin-right: 12px;
+        min-width: 24px;
+        text-align: center;
+      }
+
+      .sidebar.collapsed .nav-item span {
+        display: none;
+      }
+
+      .sidebar.collapsed .sidebar-footer span {
+        display: none;
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+        padding: 20px 16px;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: #64748b;
+        font-size: 16px;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+      }
+
+      .user-info:hover {
+        background-color: #f1f5f9;
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 14px;
+        margin: 0;
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: #64748b;
+        margin: 0;
+      }
+
+      .sidebar.collapsed .user-details {
+        display: none;
+      }
+
+      /* Main Content Area */
+      .main-content {
+        margin-left: 280px;
+        padding: 30px;
+        width: calc(100% - 280px);
+        transition: var(--transition);
+      }
+
+      .main-content.expanded {
+        margin-left: 80px;
+        width: calc(100% - 80px);
+      }
+
+      .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 24px;
+        color: var(--dark);
+      }
+
+      .user-greeting {
+        font-weight: 500;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .user-greeting span {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      /* Card Styles */
+      .card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        background-color: white;
+      }
+
+      .card:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      .upload-card {
+        padding: 24px;
+      }
+
+      .card-title {
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 24px;
+        color: var(--dark);
+      }
+
+      /* Form Styles */
+      .form-label {
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 8px;
+        color: #475569;
+      }
+
+      .form-control {
+        padding: 12px;
+        border-radius: var(--border-radius);
+        border: 1px solid #e2e8f0;
+        font-size: 14px;
+        transition: var(--transition);
+      }
+
+      .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+      }
+
+      .form-control::placeholder {
+        color: #94a3b8;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        font-weight: 600;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
+      }
+
+      /* Results section */
+      .results-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+        margin-top: 24px;
+      }
+
+      .result-card {
+        padding: 24px;
+        height: 100%;
+      }
+
+      .result-card h3 {
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 16px;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .result-card h3 i {
+        color: var(--primary);
+        font-size: 20px;
+      }
+
+      .result-card p {
+        color: #475569;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+
+      /* Chat Button */
+      .floating-chat {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: var(--primary);
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-lg);
+        cursor: pointer;
+        transition: var(--transition);
+        z-index: 100;
+      }
+
+      .floating-chat:hover {
+        transform: scale(1.05);
+        background-color: var(--primary-dark);
+      }
+
+      .floating-chat i {
+        font-size: 24px;
+      }
+
+      /* File Upload */
+      .file-upload-container {
+        border: 2px dashed #e2e8f0;
+        border-radius: var(--border-radius);
+        padding: 32px;
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition);
+        margin-bottom: 20px;
+      }
+
+      .file-upload-container:hover {
+        border-color: var(--primary);
+        background-color: rgba(79, 70, 229, 0.05);
+      }
+
+      .file-upload-icon {
+        font-size: 48px;
+        color: #94a3b8;
+        margin-bottom: 16px;
+      }
+
+      .file-upload-text {
+        font-weight: 500;
+        color: #475569;
+        margin-bottom: 8px;
+      }
+
+      .file-upload-hint {
+        font-size: 12px;
+        color: #94a3b8;
+      }
+
+      #fileInput {
+        display: none;
+      }
+
+      /* Loader */
+      .loader {
+        display: none;
+        text-align: center;
+        padding: 24px;
+      }
+
+      .loader-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #e2e8f0;
+        border-top: 4px solid var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 16px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-container">
+            <div class="logo-image">
+   <img src="{{ url_for('static', filename='assets/images/logo.png') }}" alt="Logo">
+</div>
+
+            <h1 class="brand-name">MinutesAI</h1>
+          </div>
+          <button id="toggleSidebar" class="toggle-btn">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+        </div>
+
+        <div class="nav-menu">
+          <a href="/dashboard" class="nav-item active">
+            <i class="bi bi-upload"></i>
+            <span>Upload</span>
+          </a>
+          <a href="/my_transcripts" class="nav-item">
+            <i class="bi bi-folder"></i>
+            <span>Recordings</span>
+          </a>
+          <a href="/my_chats" class="nav-item">
+            <i class="bi bi-chat-dots"></i>
+            <span>My Chats</span>
+          </a>
+          <a href="/settings" class="nav-item">
+  <i class="bi bi-gear"></i>
+  <span>Settings</span>
+</a>
+
+
+        </div>
+          <div class="sidebar-footer">
+            <a href="/logout" class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center gap-2" style="border-radius: 12px; padding: 10px 0;">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Logout</span></a>
+          </div>
+      </div>
+
+      <!-- Main Content -->
+      <div id="mainContent" class="main-content">
+        <div class="page-header">
+          <h1 class="header-title">Upload Meeting</h1>
+          <div class="user-greeting">
+            <i class="bi bi-clock"></i>
+            Welcome back,<span>{{ username }}</span>
+          </div>
+        </div>
+
+        <div class="card upload-card">
+          <h2 class="card-title">Upload a new recording</h2>
+          <form id="uploadForm">
+            <div class="mb-4">
+              <label for="meetingTitle" class="form-label">Meeting Title</label>
+              <input
+                type="text"
+                class="form-control"
+                id="meetingTitle"
+                placeholder="Enter meeting title"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label for="meetingDate" class="form-label">Meeting Date</label>
+              <input
+                type="date"
+                class="form-control"
+                id="meetingDate"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Recording File</label>
+              <div class="file-upload-container" id="fileUploadContainer">
+                <i class="bi bi-cloud-arrow-up file-upload-icon"></i>
+                <p class="file-upload-text">
+                  Drag & drop your audio or video file here
+                </p>
+                <p class="file-upload-hint">
+                  or click to browse your files (MP4, WAV, M4A) Only file with 100MB.
+                </p>
+                <input
+                  type="file"
+                  id="fileInput"
+                  name="meetingFile"
+                  accept="audio/*,video/*"
+                  required
+                />
+              </div>
+              <div
+                id="fileNameDisplay"
+                class="mt-2"
+                style="display: none"
+              ></div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-cloud-upload me-2"></i>Upload
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Loader -->
+        <div id="loader" class="loader">
+          <div class="loader-spinner"></div>
+          <p>Processing your recording...</p>
+        </div>
+
+        <!-- Results Section with Tabs -->
+        <div id="resultsContainer" style="display: none;">
+          <ul class="nav nav-tabs" id="resultTabs" role="tablist">
+           <li class="nav-item" role="presentation">
+             <button class="nav-link active" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summaryTab" type="button" role="tab">
+              <i class="bi-file-earmark-text"></i>Meeting Summary</button>
+           </li>
+           <li class="nav-item" role="presentation">
+             <button class="nav-link" id="transcript-tab" data-bs-toggle="tab" data-bs-target="#transcriptTab" type="button" role="tab">
+             Speaker Separated Text</button>
+           </li>
+          </ul>
+
+  <div class="tab-content mt-3" id="resultTabsContent">
+    <div class="tab-pane fade show active card result-card" id="summaryTab" role="tabpanel">
+      <h3><i class="bi bi-card-text"></i> Meeting Summary</h3>
+      <p id="summarizedText" class="result-content"></p>
+    </div>
+    <div class="tab-pane fade card result-card" id="transcriptTab" role="tabpanel">
+      <h3><i class="bi bi-people"></i> Speaker Separated Text</h3>
+      <p id="diarizedText" class="result-content"></p>
+    </div>
+  </div>
+
+  <!-- Download Option -->
+  <!-- Inside the download section in dashboard.html -->
+<div class="mt-4">
+  <form id="downloadForm" method="get" action="/download_transcript">
+    <input type="hidden" name="doc_id" id="docIdField" />
+    <label for="downloadFormat" class="form-label">Download as:</label>
+    <select name="format" id="downloadFormat" class="form-select w-auto d-inline-block">
+      <option value="pdf">PDF</option>
+      <option value="docx">Word (.docx)</option>
+    </select>
+    <button class="btn btn-primary ms-2" type="submit">Download</button>
+  </form>
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+
+       <!-- ---------- JavaScript ---------- -->
+    <script>
+      // Toggle sidebar
+  const sidebar = document.getElementById("sidebar");
+  const mainContent = document.getElementById("mainContent");
+  const toggleBtn = document.getElementById("toggleSidebar");
+  const toggleIcon = toggleBtn.querySelector("i");
+
+  // Function to set toggle icon based on state
+  function updateToggleIcon(collapsed) {
+    if (collapsed) {
+      toggleIcon.classList.remove("bi-chevron-left");
+      toggleIcon.classList.add("bi-chevron-right");
+    } else {
+      toggleIcon.classList.remove("bi-chevron-right");
+      toggleIcon.classList.add("bi-chevron-left");
+    }
+  }
+
+  // On first load: decide default based on screen size
+  if (!localStorage.getItem("sidebarCollapsed")) {
+    const isMobile = window.innerWidth <= 768;
+    localStorage.setItem("sidebarCollapsed", isMobile ? "true" : "false");
+  }
+
+  // Apply saved preference
+  const isCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+  if (isCollapsed) {
+    sidebar.classList.add("collapsed");
+    mainContent.classList.add("expanded");
+    updateToggleIcon(true);
+  } else {
+    sidebar.classList.remove("collapsed");
+    mainContent.classList.remove("expanded");
+    updateToggleIcon(false);
+  }
+
+  // Handle toggle click
+  toggleBtn.addEventListener("click", function () {
+    sidebar.classList.toggle("collapsed");
+    mainContent.classList.toggle("expanded");
+
+    const isNowCollapsed = sidebar.classList.contains("collapsed");
+    localStorage.setItem("sidebarCollapsed", isNowCollapsed ? "true" : "false");
+    updateToggleIcon(isNowCollapsed);
+  });
+
+      // File upload handling
+      const fileUploadContainer = document.getElementById(
+        "fileUploadContainer"
+      );
+      const fileInput = document.getElementById("fileInput");
+      const fileNameDisplay = document.getElementById("fileNameDisplay");
+
+      fileUploadContainer.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files.length > 0) {
+          const fileName = e.target.files[0].name;
+          fileNameDisplay.innerHTML = `<div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>
+            <strong>${fileName}</strong> selected
+            <button type="button" class="btn-close float-end" id="removeFile"></button>
+          </div>`;
+          fileNameDisplay.style.display = "block";
+
+          document
+            .getElementById("removeFile")
+            .addEventListener("click", (e) => {
+              e.stopPropagation();
+              fileInput.value = "";
+              fileNameDisplay.style.display = "none";
+            });
+        }
+      });
+
+      // Drag and drop functionality
+      fileUploadContainer.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        fileUploadContainer.style.borderColor = "#4f46e5";
+        fileUploadContainer.style.backgroundColor = "rgba(79, 70, 229, 0.05)";
+      });
+
+      fileUploadContainer.addEventListener("dragleave", () => {
+        fileUploadContainer.style.borderColor = "#e2e8f0";
+        fileUploadContainer.style.backgroundColor = "transparent";
+      });
+
+      fileUploadContainer.addEventListener("drop", (e) => {
+        e.preventDefault();
+        fileUploadContainer.style.borderColor = "#e2e8f0";
+        fileUploadContainer.style.backgroundColor = "transparent";
+
+        if (e.dataTransfer.files.length > 0) {
+          fileInput.files = e.dataTransfer.files;
+          const fileName = e.dataTransfer.files[0].name;
+          fileNameDisplay.innerHTML = `<div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>
+            <strong>${fileName}</strong> selected
+            <button type="button" class="btn-close float-end" id="removeFile"></button>
+          </div>`;
+          fileNameDisplay.style.display = "block";
+
+          document
+            .getElementById("removeFile")
+            .addEventListener("click", (e) => {
+              e.stopPropagation();
+              fileInput.value = "";
+              fileNameDisplay.style.display = "none";
+            });
+        }
+      });
+
+      // Form submission
+      document
+        .getElementById("uploadForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const meetingTitle = document.getElementById("meetingTitle").value;
+          const meetingDate = document.getElementById("meetingDate").value;
+          const meetingFile = document.getElementById("fileInput").files[0];
+
+          if (!meetingFile) {
+            alert("Please select a file to upload");
+            return;
+          }
+           if (meetingFile.size > 100 * 1024 * 1024) {
+    alert("File too large! Maximum allowed size is 100 MB.");
+    return;
+  }
+
+          // Show loader and scroll into view
+          const loaderElement = document.getElementById("loader");
+          loaderElement.style.display = "block";
+          loaderElement.scrollIntoView({ behavior: "smooth" });
+
+
+          const formData = new FormData();
+          formData.append("title", meetingTitle);
+          formData.append("date", meetingDate);
+          formData.append("file", meetingFile);
+
+          try {
+            // In a real application, this would be your actual API endpoint
+            const response = await fetch(window.location.origin + "/upload-media", {
+              method: "POST",
+              body: formData,
+            });
+
+            const result = await response.json();
+document.getElementById("resultsContainer").style.display = "grid";
+document.getElementById("diarizedText").innerHTML = result.diarized_text.replace(/\n/g, "<br>");
+document.getElementById("summarizedText").innerHTML = result.summary;
+
+//  Set the doc_id for download
+if (result.doc_id) {
+  document.getElementById("docIdField").value = result.doc_id;
+}
+
+
+            // Hide loader
+            document.getElementById("loader").style.display = "none";
+
+            if (response.ok) {
+              // Show results
+              document.getElementById("resultsContainer").style.display =
+                "grid";
+              document.getElementById("diarizedText").innerHTML =
+                result.diarized_text.replace(/\n/g, "<br>");
+              document.getElementById("summarizedText").innerHTML =
+                result.summary;
+
+              // Scroll to results
+              document
+                .getElementById("resultsContainer")
+                .scrollIntoView({ behavior: "smooth" });
+            } else {
+              alert("Error: " + (result.error || "Unknown error occurred."));
+            }
+          } catch (error) {
+            console.error("Error uploading file:", error);
+            document.getElementById("loader").style.display = "none";
+
+            // Show error message
+            alert("Failed to upload file. Please try again later.");
+          }
+        });
+
+        // Disable future dates for the meeting date input
+  document.addEventListener("DOMContentLoaded", function () {
+    const dateInput = document.getElementById("meetingDate");
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.setAttribute("max", today);
+  });
+
+  //download function
+
+  function downloadDocument() {
+    const format = document.getElementById("downloadFormat").value;
+    
+    fetch(`/download?format=${format}`)
+      .then(response => {
+        if (!response.ok) throw new Error("Download failed.");
+        return response.blob();
+      })
+      .then(blob => {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `meeting_summary.${format === "pdf" ? "pdf" : "docx"}`;
+        link.click();
+      })
+      .catch(err => alert(err.message));
+  }
+
+      // Chat button functionality
+      document
+        .getElementById("chatButton")
+        .addEventListener("click", function () {
+          alert("Chat assistant is coming soon!");
+        });
+
+        // Listen for logout signal from other tabs
+  window.addEventListener('storage', function (event) {
+    if (event.key === 'logout-event') {
+      // Logout detected in another tab
+      window.location.href = "/login";
+    }
+  });
+
+  // When user clicks logout, fire logout-event across all tabs
+  const logoutBtn = document.querySelector('a[href="/logout"]');
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.setItem("logout-event", Date.now()); // Triggers other tabs
+    });
+  }
+    </script>
+  </body>
+</html>

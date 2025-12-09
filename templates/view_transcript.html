@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MinutesAI Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-light: #e0e7ff;
+        --primary-dark: #3730a3;
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --border-radius: 12px;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05),
+          0 5px 15px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.05),
+          0 5px 20px rgba(0, 0, 0, 0.15);
+        --transition: all 0.3s ease;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+        color: var(--dark);
+        overflow-x: hidden;
+      }
+
+      .app-container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        background-color: white;
+        transition: var(--transition);
+        width: 280px;
+        border-right: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 10;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .sidebar.collapsed {
+        width: 80px;
+      }
+
+      .sidebar-header {
+        padding: 24px 20px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background-color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 18px;
+      }
+
+      .brand-name {
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--dark);
+        margin: 0;
+        white-space: nowrap;
+        transition: var(--transition);
+      }
+
+      .sidebar.collapsed .brand-name {
+        display: none;
+      }
+
+      .toggle-btn {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: #94a3b8;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .toggle-btn:hover {
+        background-color: #f1f5f9;
+        color: var(--primary);
+      }
+
+      .nav-menu {
+        display: flex;
+        flex-direction: column;
+        padding: 20px 16px;
+        gap: 8px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: #64748b;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+        font-weight: 500;
+      }
+
+      .nav-item:hover {
+        background-color: #f1f5f9;
+        color: var(--primary);
+      }
+
+      .nav-item.active {
+        background-color: var(--primary-light);
+        color: var(--primary-dark);
+        font-weight: 600;
+      }
+
+      .nav-item i {
+        font-size: 20px;
+        margin-right: 12px;
+        min-width: 24px;
+        text-align: center;
+      }
+
+      .sidebar.collapsed .nav-item span {
+        display: none;
+      }
+
+      .sidebar.collapsed .sidebar-footer span {
+        display: none;
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+        padding: 20px 16px;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: #64748b;
+        font-size: 16px;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+      }
+
+      .user-info:hover {
+        background-color: #f1f5f9;
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 14px;
+        margin: 0;
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: #64748b;
+        margin: 0;
+      }
+
+      .sidebar.collapsed .user-details {
+        display: none;
+      }
+
+      /* Main Content Area */
+      .main-content {
+        margin-left: 280px;
+        padding: 30px;
+        width: calc(100% - 280px);
+        transition: var(--transition);
+      }
+
+      .main-content.expanded {
+        margin-left: 80px;
+        width: calc(100% - 80px);
+      }
+
+      .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 24px;
+        color: var(--dark);
+      }
+       /* Card Styles */
+      .card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        background-color: white;
+      }
+
+      .card:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      .upload-card {
+        padding: 24px;
+      }
+
+      .card-title {
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 24px;
+        color: var(--dark);
+      }
+
+        .tab-content h5 {
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .tab-content p {
+      white-space: pre-wrap;
+      font-size: 14px;
+    }
+
+    .download-section {
+      margin-top: 20px;
+    }
+
+    .btn-download {
+      margin-left: 10px;
+    }
+.logo-image img {
+  height: 36px;
+  width: 36px;
+  border-radius: 10px;
+  object-fit: contain;
+  display: block;
+}
+
+    </style>
+    
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-container">
+            <div class="logo-image">
+              <img src="{{ url_for('static', filename='assets/images/logo.png') }}" alt="Logo">
+            </div>
+            <h1 class="brand-name">MinutesAI</h1>
+          </div>
+          <button id="toggleSidebar" class="toggle-btn">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+        </div>
+
+        <div class="nav-menu">
+          <a href="/dashboard" class="nav-item "><i class="bi bi-upload"></i><span>Upload</span></a>
+          <a href="/my_transcripts" class="nav-item active"><i class="bi bi-folder"></i><span>Recordings</span></a>
+          <a href="/my_chats" class="nav-item"><i class="bi bi-chat-dots"></i><span>My Chats</span>
+          </a>
+             <a href="/settings" class="nav-item">
+  <i class="bi bi-gear"></i>
+  <span>Settings</span>
+</a>
+
+        </div>
+          <div class="sidebar-footer">
+            <a href="/logout" class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center gap-2" style="border-radius: 12px; padding: 10px 0;">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Logout</span></a>
+          </div>
+      </div>
+
+
+      <div class="main-content w-100" id="mainContent">
+         <div class="page-header">
+          <h1 class="header-title">{{ meeting_title }}</h1>
+          <a href="/my_transcripts" class="btn btn-outline-secondary">← Back</a>
+      </div>
+
+      <div class="card upload-card">
+                <!-- Tabs -->
+      <ul class="nav nav-tabs" id="resultTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summaryTab" type="button" role="tab">Meeting Summary</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="transcript-tab" data-bs-toggle="tab" data-bs-target="#transcriptTab" type="button" role="tab">Speaker Transcript</button>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="resultTabsContent">
+        <div class="tab-pane fade show active" id="summaryTab" role="tabpanel">
+          <h5>Summary:</h5>
+          <p>{{ summary }}</p>
+        </div>
+        <div class="tab-pane fade" id="transcriptTab" role="tabpanel">
+          <h5>Transcript:</h5>
+          <p>{{ transcript }}</p>
+        </div>
+      </div>
+
+      <!-- Download -->
+      <div class="download-section">
+        <form method="get" action="/download_transcript">
+  <input type="hidden" name="doc_id" value="{{ file_id }}" />
+  <label for="format">Download as:</label>
+  <select name="format" id="format" class="form-select d-inline-block w-auto">
+    <option value="pdf">PDF</option>
+    <option value="docx">Word (.docx)</option>
+  </select>
+  <button type="submit" class="btn btn-primary btn-download">Download</button>
+</form>
+
+      </div>
+    </div>
+  </div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Toggle sidebar
+      document.getElementById("toggleSidebar").addEventListener("click", function () {
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("mainContent");
+    const toggleIcon = this.querySelector("i");
+
+    sidebar.classList.toggle("collapsed");
+    mainContent.classList.toggle("expanded");
+
+    // Save the state in localStorage
+    const isCollapsed = sidebar.classList.contains("collapsed");
+    localStorage.setItem("sidebar-collapsed", isCollapsed);
+
+    // Toggle the icon
+    toggleIcon.classList.toggle("bi-chevron-left", !isCollapsed);
+    toggleIcon.classList.toggle("bi-chevron-right", isCollapsed);
+  });
+
+  // Load state on page load
+  window.addEventListener("DOMContentLoaded", function () {
+    const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("mainContent");
+    const toggleIcon = document.querySelector("#toggleSidebar i");
+
+    if (isCollapsed) {
+      sidebar.classList.add("collapsed");
+      mainContent.classList.add("expanded");
+      toggleIcon.classList.remove("bi-chevron-left");
+      toggleIcon.classList.add("bi-chevron-right");
+    } else {
+      toggleIcon.classList.remove("bi-chevron-right");
+      toggleIcon.classList.add("bi-chevron-left");
+    }
+  });
+
+
+  function showDetails(summary, transcript) {
+    document.getElementById("modalSummary").innerText = summary;
+    document.getElementById("modalTranscript").innerText = transcript;
+    new bootstrap.Modal(document.getElementById("viewModal")).show();
+  }
+
+  // When user clicks logout, fire logout-event across all tabs
+  const logoutBtn = document.querySelector('a[href="/logout"]');
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.setItem("logout-event", Date.now()); // Triggers other tabs
+    });
+  }
+
+</script>
+</body>
+</html>

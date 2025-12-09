@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings | MinutesAI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-light: #e0e7ff;
+      --primary-dark: #3730a3;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --border-radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.1);
+    }
+    body{font-family:"Inter",sans-serif;background:#f8fafc;color:var(--dark);overflow-x:hidden}
+    .app-container{display:flex;min-height:100vh}
+    .sidebar{background:#fff;transition:all .3s ease;width:280px;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;position:fixed;height:100vh;z-index:10;box-shadow:var(--shadow-sm)}
+    .sidebar.collapsed{width:80px}
+    .sidebar-header{padding:24px 20px;display:flex;align-items:center;border-bottom:1px solid #e2e8f0}
+    .logo-container{display:flex;align-items:center;gap:12px}
+    .logo-image img{height:36px;width:36px;border-radius:10px;object-fit:contain;display:block}
+    .brand-name{font-weight:700;font-size:18px;color:var(--dark);margin:0;white-space:nowrap;transition:all .3s ease}
+    .sidebar.collapsed .brand-name{display:none}
+    .toggle-btn{margin-left:auto;background:none;border:none;color:#94a3b8;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s ease}
+    .toggle-btn:hover{background:#f1f5f9;color:var(--primary)}
+    .nav-menu{display:flex;flex-direction:column;padding:20px 16px;gap:8px}
+    .nav-item{display:flex;align-items:center;padding:12px 16px;text-decoration:none;color:#64748b;border-radius:var(--border-radius);transition:all .3s ease;font-weight:500}
+    .nav-item:hover{background:#f1f5f9;color:var(--primary)}
+    .nav-item.active{background:var(--primary-light);color:var(--primary-dark);font-weight:600}
+    .nav-item i{font-size:20px;margin-right:12px;min-width:24px;text-align:center}
+    .sidebar.collapsed .nav-item span{display:none}
+    .sidebar.collapsed .sidebar-footer span{display:none}
+    .sidebar-footer{margin-top:auto;padding:20px 16px;border-top:1px solid #e2e8f0}
+    .main-content{margin-left:280px;padding:30px;width:calc(100% - 280px);transition:all .3s ease}
+    .main-content.expanded{margin-left:80px;width:calc(100% - 80px)}
+    .card{border:none;border-radius:var(--border-radius);box-shadow:0 2px 4px rgba(0,0,0,.05);background:#fff;padding:20px}
+    @media(max-width:768px){.main-content{margin-left:0;width:100%;padding:20px}}
+    .form-control{border-radius:10px;padding:12px}
+    .btn-primary{background:#4f46e5;border-color:#4f46e5}
+    .btn-primary:hover{background:#4338ca;border-color:#4338ca}
+    .btn-warning{border-radius:10px}
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- Sidebar (exact same markup/style/colors) -->
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <div class="logo-image">
+          <img src="{{ url_for('static', filename='assets/images/logo.png') }}" alt="Logo">
+        </div>
+        <h1 class="brand-name">MinutesAI</h1>
+      </div>
+      <button id="toggleSidebar" class="toggle-btn"><i class="bi bi-chevron-left"></i></button>
+    </div>
+
+    <div class="nav-menu">
+      <a href="/dashboard" class="nav-item">
+        <i class="bi bi-upload"></i><span>Upload</span>
+      </a>
+      <a href="/my_transcripts" class="nav-item">
+        <i class="bi bi-folder"></i><span>Recordings</span>
+      </a>
+      <a href="/my_chats" class="nav-item">
+        <i class="bi bi-chat-dots"></i><span>My Chats</span>
+      </a>
+      <!-- New item uses the SAME style/colors -->
+      <a href="/settings" class="nav-item active">
+        <i class="bi bi-gear"></i><span>Settings</span>
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="/logout" class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center gap-2" style="border-radius:12px;padding:10px 0;">
+        <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main-content" id="mainContent">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Account Settings</h2>
+      <a href="/dashboard" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    {% if message %}
+      <div class="alert alert-info">{{ message }}</div>
+    {% endif %}
+<div class="card mb-4">
+  <h5 class="mb-3">Update Profile</h5>
+  <form method="POST" action="/settings/update_profile">
+    <div class="mb-3">
+      <label class="form-label">Username</label>
+      <input type="text" name="name" value="{{ user.name }}" class="form-control" required />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" name="email" value="{{ user.email }}" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+  </form>
+</div>
+
+
+    <div class="card">
+      <h5 class="mb-3">Change Password</h5>
+      <form method="POST" action="/settings/update_password">
+        <div class="mb-3">
+          <input type="password" name="current_password" placeholder="Current Password" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <input type="password" name="new_password" placeholder="New Password (min 8 chars)" minlength="8" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <input type="password" name="confirm_password" placeholder="Confirm New Password" minlength="8" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-warning">Update Password</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Sidebar toggle (same behavior)
+  document.getElementById("toggleSidebar").addEventListener("click", function () {
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("mainContent");
+    const toggleIcon = this.querySelector("i");
+    sidebar.classList.toggle("collapsed");
+    mainContent.classList.toggle("expanded");
+    const isCollapsed = sidebar.classList.contains("collapsed");
+    localStorage.setItem("sidebar-collapsed", isCollapsed);
+    toggleIcon.classList.toggle("bi-chevron-left", !isCollapsed);
+    toggleIcon.classList.toggle("bi-chevron-right", isCollapsed);
+  });
+
+  // Load saved state
+  window.addEventListener("DOMContentLoaded", function () {
+    const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("mainContent");
+    const toggleIcon = document.querySelector("#toggleSidebar i");
+    if (isCollapsed) {
+      sidebar.classList.add("collapsed");
+      mainContent.classList.add("expanded");
+      toggleIcon.classList.remove("bi-chevron-left");
+      toggleIcon.classList.add("bi-chevron-right");
+    } else {
+      toggleIcon.classList.remove("bi-chevron-right");
+      toggleIcon.classList.add("bi-chevron-left");
+    }
+  });
+</script>
+</body>
+</html>

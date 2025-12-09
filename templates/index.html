@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MinutesAI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fc;
+      color: #1e293b;
+    }
+
+    .navbar {
+      background-color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar-brand img {
+      height: 36px;
+      margin-right: 10px;
+    }
+
+    .hero {
+      background: linear-gradient(to right, #eef2ff, #ffffff);
+      padding: 100px 0 60px;
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-weight: 700;
+      font-size: 2.8rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: #475569;
+    }
+
+    .btn-primary {
+      background-color: #4f46e5;
+      border-color: #4f46e5;
+      padding: 12px 28px;
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      background-color: #4338ca;
+      border-color: #4338ca;
+    }
+
+    .feature-box {
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
+      transition: 0.3s ease;
+    }
+
+    .feature-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-icon {
+      font-size: 36px;
+      color: #4f46e5;
+      margin-bottom: 16px;
+    }
+
+    .about-img {
+      max-height: 300px;
+    }
+
+    .footer {
+      background-color: #ffffff;
+      border-top: 1px solid #e5e5e5;
+      padding: 30px 0;
+    }
+
+    .modal-content {
+      border-radius: 16px;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero {
+        padding-top: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg py-3">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center fw-bold gap-2" href="#">
+        <img src="{{ url_for('static', filename='assets/images/logo.png') }}" alt="MinutesAI Logo" />
+        <span>MinutesAI</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav align-items-center">
+        <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item">
+          <a href="/login" class="btn btn-outline-primary ms-3 mb-2">Login</a>
+        </li>
+        <li class="nav-item">
+          <a href="/signup" class="btn btn-primary ms-2 mb-3">Sign Up</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6" data-aos="fade-right">
+        <h1 class="mb-4">Smart AI-Powered <br />Meeting Summaries and Transcriptions</h1>
+        <p class="mb-4">Upload recordings. Get transcriptions, summaries, and chat-based insights — all powered by AI.</p>
+        <a href="/signup" class="btn btn-primary btn-lg mb-4">Get Started</a>
+      </div>
+      <div class="col-md-6 text-center" data-aos="fade-left">
+        <img src="{{ url_for('static', filename='assets/images/illustration.png') }}" alt="Hero Illustration" class="img-fluid mt-3 mb-3" style="max-height: 400px;" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5 bg-light">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-5" data-aos="fade-up">Everything You Need in One AI Assistant</h2>
+    <div class="row g-4">
+      <div class="col-md-4" data-aos="fade-up">
+        <div class="feature-box h-100">
+          <div class="feature-icon"><i class="bi bi-mic-fill"></i></div>
+          <h5 class="fw-semibold">Auto Transcription</h5>
+          <p>Convert meeting recordings into speaker-separated transcripts, instantly and accurately.</p>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-box h-100">
+          <div class="feature-icon"><i class="bi bi-lightbulb-fill"></i></div>
+          <h5 class="fw-semibold">Smart Summaries</h5>
+          <p>AI condenses hours of conversation into a summary with action points and decisions.</p>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-box h-100">
+          <div class="feature-icon"><i class="bi bi-chat-dots-fill"></i></div>
+          <h5 class="fw-semibold">Interactive Chat</h5>
+          <p>Ask questions like “What did Alex say about the budget?” and get instant answers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6" data-aos="fade-right">
+        <h2 class="fw-bold mb-4">Built to Save You Hours</h2>
+        <p class="lead">MinutesAI helps you extract value from every meeting — by automating note-taking, providing clarity, and boosting focus on what matters most.</p>
+        <a href="/signup" class="btn btn-outline-primary mt-4">Start Free</a>
+      </div>
+      <div class="col-md-6 text-center" data-aos="fade-left">
+        <img src="{{ url_for('static', filename='assets/images/about-illustration.png') }}" alt="About Illustration" class="img-fluid about-img mt-4" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer text-center">
+  <div class="container">
+    <p class="text-muted mb-0">&copy; 2025 MinutesAI. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+</body>
+</html>
