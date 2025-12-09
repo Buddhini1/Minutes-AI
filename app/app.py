@@ -36,7 +36,7 @@ from peft import PeftModel
 BASE_MODEL_PATH = os.getenv("BASE_MODEL_PATH", "microsoft/phi-3-mini-4k-instruct") 
 
 # LoRA adapter (fine-tuned weights for chatbot)
-LORA_ADAPTER_PATH = "C:/Users/ADMIN/OneDrive/Desktop/Final MeetingSum working/buddhini research/app/pretend-lora-phi3-mini" #adapt to your path, fine-tuned lora adapter path
+LORA_ADAPTER_PATH = "app/pretend-lora-phi3-mini" #adapt to your path, fine-tuned lora adapter path
 
 # Load model in 4-bit precision (saves VRAM, fits smaller GPUs ~4GB)
 LOAD_4BIT_KW = dict(
@@ -62,7 +62,7 @@ with open("fernet.key", "rb") as key_file:
     fernet = Fernet(key_file.read())
 
 # MongoDB setup
-client = MongoClient("mongodb+srv://minutesai_user:your_secure_password@minutesai.vs5njhc.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient(" ")
 db = client["minutesai"]
 
 # Collections
